@@ -1,5 +1,3 @@
-# Foobar
-
 # Image Manipulation
 
 To apply what we have learned in the lecture, you are required to complete this task sheet. You can seek assistance from tutors, fellow students, and/or online resources.
