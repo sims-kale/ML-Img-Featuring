@@ -1,96 +1,104 @@
-# Image Manipulation
+# Color Space and Histogram
 
-To apply what we have learned in the lecture, you are required to complete this task sheet. You can seek assistance from tutors, fellow students, and/or online resources.
+Color space and histogram are fundamental concepts in computer vision that play crucial roles in image processing and analysis. These tools enable machines to interpret and manipulate visual information effectively.
 
-Please follow the instructions. In order to make your code work, you need to complete all the tasks in the checklist - ✅
+**Color Space**
+
+A color space is a specific organization of colors that allows for consistent representations across devices. Common color spaces include:
+
+- RGB (Red, Green, Blue): Used in digital displays
+- HSV (Hue, Saturation, Value): Intuitive for human perception
+- CMYK (Cyan, Magenta, Yellow, Key/Black): Used in printing
+
+In computer vision, different cooler spaces can highlight various aspects of an image, making certain operations more efficient or effective.
+
+**Histogram**
+
+A histogram is a graphical representation of the distribution of pixel intensities in an image. In the context of color images, histograms can be created for each color channel separately or as a combined representation.
+
+Key uses of histograms in computer vision include:
+
+- Image enhancement: Adjusting contrast and brightness
+- Thresholding: Separating objects from backgrounds
+- Feature extraction: Identifying unique characteristics of images
+
+**Applications in Computer Vision**
+
+The combination of color space manipulation and histogram analysis enables various computer vision tasks:
+
+- Object detection and recognition
+- Image segmentation
+- Color-based tracking
+- Image retrieval
+
+By leveraging these tools, computer vision systems can process and understand visual data more effectively, leading to advancements in fields such as autonomous vehicles, medical imaging, and facial recognition.
+
+ ## Task 1: RGB Color Space
+
+Starting this week, we recommend using Matplotlib to display plots and images, as it offers more customizable functions. Today, you'll see a demonstration on how to use customization to generate plots for information visualization.
+
+✅ Read a sample flower image by using `cv2.imread` function
 
 
-## Task 1: Use OpenCV to load and display an image
 
-OpenCV (Open Source Computer Vision Library: http://opencv.org) is an open-source library that includes several hundreds of computer vision algorithms.
-
-In the lab, we will use the OpenCV library to work on image processing and computer vision tasks. Let's start from the basics
-
-First of all, you need to install OpenCV library.
-
-✅ you  need to `import` it into your code. the library is called `cv2`
-
-To load and display image, you need to:
-> ✅ Choose some sample images and put them in your Google Drive
+✅ Check the data format of the image, what size is it?
+>A color image is represented as a 3D matrix because it contains three color channels: Red, Green, and Blue (RGB). Each channel represents the intensity of that particular color for each pixel in the image:
 >
-> ✅ Allow this project to visit your Google Drive
+>- Width: Represents the horizontal dimension of the image
+>- Height: Represents the vertical dimension of the image
+>- Depth: Represents the three color channels (R, G, B)
 >
-> ✅ Use `cv2.imread()` function. You can get the help document from [Here](https://docs.opencv.org/3.4/d4/da8/group__imgcodecs.html#ga288b8b3da0892bd651fce07b3bbd3a56)
-> ✅ Use `cv2_imshow()` function to display the image
-
-❗The OpenCV document is originally designed for C++, the Python doc is include but is below the C++ doc
-
-## Task 2: Basic Image Manipulations
-
-__1. Resize the image__
-
-✅ Check the variable you created to store the image, what data format/size is it? You can `import` library called `numpy` to return the size of array by using `numpy.shape()`
-
-✅ Use `cv2.resize()` function to change the image size to 100 by 100. Display the new image.
-
-__2.Rotate the image 45 degrees__
-
-✅ Creates a rotation matrix using `cv2.getRotationMatrix2D()`. This function takes three arguments: the center of the rotation, the angle of rotation, and the scale.
-
-✅ Rotates the image using cv2.warpAffine(). This function takes three arguments: the image, the rotation matrix, and the size of the output image.
-
-❗How to get the center of the rotation?
-
-❗Be aware the data format of the center, which should be a tuple as `(x, y)`
-> A tuple is a data structure in Python that is similar to a list. However, there are some key differences.
-Tuples are immutable, which means that they cannot be changed after they are created. Lists, on the other hand, are mutable, which means that they can be changed.
-Tuples are ordered, which means that the elements in a tuple have a specific order.
-Tuples can contain elements of different data types.
-
-✅ Display the rotated image
-
-__3. Applying Filters (Convolution)__
-
-You can apply many filters to the images, such as Gaussian Blur filters to blur the image
-
-✅ Using `cv2.GaussianBlur()` to blur an image and display the output
-
-`cv2.GaussianBlur()` is a function that applies a Gaussian blur to an image.
-* The first argument is the image to be blurred.
-* The second argument is the kernel size. you can use for example (3, 3),(5, 5), (9, 9).
-* The third argument is the standard deviation of the Gaussian distribution. In this case, it is 0, which means that the standard deviation is calculated automatically.
-
-✅ There are more filters in OpenCV. Such as Median filter (`cv2.medianBlur()`) which is a highly effective filter for reducing noise but also keep the share edge of the image (the Gaussian blurs everything including the sharp edges). Work on yourself and try different cv2 function and display their results.
-
-## Task 3: Save the image
-
-Once you completed the image processing, if you want to save the image back to computer as an image, you will use `cv2.imwrite()`. Check out how to use them and save your image from the task 2 in your Google Drive.
-
-## Task 4 - Manipulate pixels
-
-If you get the size and the data structure of the variable used to store the image, you then can use the __indexing method__ to visit its elements - pixels.
-Check this [doc](https://numpy.org/devdocs/user/basics.indexing.html) for the indexing technique
-
-> ✅ Display the pixel values at (x, y) location (20,20).
+>So, for each pixel in the image, there are three values corresponding to the intensity of red, green, and blue. This three-dimensional structure allows for the representation of a wide range of colors by combining different intensities of these primary colors.
 >
-> ✅ Be careful if your image is a color image and you need to choose an image channel (i.e. Blue, Green or Red channel). Can you display just the value from __Red__ channel?
->
-> ✅__[Bonus]__Check the given soucecode of the function called `salt_pepper()`. Try to make it work on your own image. What does this function do?
-> ✅__[Bonus]__The image generated is noisy, you can use the filters we used in the previous tasks to reduce the noise. Which filter works better?
+> ❗ In computer vision, understanding this 3D matrix structure is crucial for various tasks such as image processing, color-based object detection, and image segmentation.
 
-# Task 5: Feature Space [Bonus Task]
+✅ OpenCV have a different order for color channel, instead of R,G,B, they use B,G,R. which sometimes cause issues with other libraries (such as Matplotlib). To fix it, you can convert the color space from BGR to RGB by using `cv2.cvtColor()` function [Click here for more details](https://www.geeksforgeeks.org/python-opencv-cv2-cvtcolor-method/)
 
-✅ Load the 20 images of cats and dogs from the "CAT_VS_DOG" image folder. Find the [details](https://www.geeksforgeeks.org/how-to-use-glob-function-to-find-files-recursively-in-python/) on how to use `glob` to load image batches.
+## Task 2: After changing the channel order from BGR to RGB, create three separate images to store the R, G, and B channel images using list indexing and slicing.
 
-✅ Reshape all the images to a uniform size of 200*200 pixels. You may want to check the [examples](https://www.tutorialkart.com/opencv/python/opencv-python-resize-image/#gsc.tab=0) of how to resize an image in OpenCV.
 
-✅ Design a feature space. OpenCV have some prebuild features such as `cv2.goodFeaturesToTrack()` There are some other features you can play with such as:
-* SIFT (Scale-Invariant Feature Transform)
-* SURF (Speeded-Up Robust Features)
-* ORB (Oriented FAST and Rotated BRIEF)
 
-Each feature has their advantages for a specific computer vision task. (btw, We will introduce HoG feature in the classroom for object detection tasks). Try to do a research and self-study to see how the information can be modelled in Python as a feature space. As we mentioned in the lecture, each image can be represented by a row of features. The whole dataset are then formatted together as a 2D datasheet. I
+## Task 3: RGB Histogram
 
-✅ Implement your design and generate a comprehensive feature space in Python for this dataset. You have the flexibility to use various data structures such as lists or arrays. The feature space should encompass all the image samples and incorporate all the features you have designed for this feature space.
+✅ Use `cv2.calcHist()` to generate histogram for each image (R, G and B) [Click here for more details](https://www.geeksforgeeks.org/python-opencv-cv2-calchist-method/)
 
-ℹ You may want to check how to use [list comprehansion](https://www.w3schools.com/python/python_lists_comprehension.asp) rather than for loops to process a group of data, which is much faster!
+✅ Create a 1 by 3 subplot for three histograms. You can use Matplotlib plot function for that [click here for more details](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.plot.html
+
+✅ You can customize the plots, do some self-study and create a suitable plot as image histogram
+
+## Task 4: HSV Color Space and histogram
+
+✅ Use `cv2.cvtColor()` to convert the color space from RGB to HSV.
+
+✅ (Optional) Create your own RGB2HSV function from scratch based on the lecture content.
+
+✅ Create three separate channels (H, S, and V) for the image, similar to the RGB image.
+
+✅ Display the channel images in a 1 by 3 subplot, using suitable color maps to represent the information.
+
+✅ Display histograms of each channel in a 1 by 3 subplot
+
+## Task 5: Compare the similarity of histograms
+
+### Why Compare Histograms?
+
+- Image Similarity: To determine how similar two images are in terms of color distribution.
+- Object Recognition: To identify objects based on their color characteristics.
+- Image Retrieval: To find images with similar content in large databases.
+- Tracking: To track objects across video frames by comparing color histograms.
+
+### How to Compare Histograms
+
+There are several methods to compare histograms:
+
+- **Correlation:** Measures the correlation between two histograms. Range: [-1, 1], where 1 is a perfect match.
+- **Chi-Square:** Calculates the chi-square distance between histograms. Range: [0, ∞), where 0 is a perfect match.
+- **Bhattacharyya Distance:** Measures the similarity of two probability distributions. Range: [0, 1], where 0 is a perfect match.
+
+In OpenCV, you can use the `cv2.compareHist()` function to compare histograms using these methods.
+
+✅ Do a research on each methods to compare histograms
+
+✅ Implement some of your research and compare above histograms. For example, how similar between R and G channel?
+
+> This is the warm up practice for next week's project - image segmentation.
