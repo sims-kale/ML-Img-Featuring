@@ -230,7 +230,7 @@ def main():
         # bw[1] is the thresholded image (second element of the tuple returned by threshold function)
         mask = (bw[1] == 255)  # mask should be a binary image (0 or 255)
         h_masked_r = cv2.calcHist([img], [0], mask.astype(np.uint8), [256], [0, 256])
-        print(f'{index+1}: the threshold value is {bw[0]}')  # bw[0] is the threshold value
+        # print(f'{index+1}: the threshold value is {bw[0]}')  # bw[0] is the threshold value
         
         # Append to h_masked
         h_masked.append(h_masked_r)
