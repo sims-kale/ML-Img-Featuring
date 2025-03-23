@@ -49,13 +49,13 @@ def display_histogram_grid(histograms, cols=7, title="Histogram"):
     plt.tight_layout()
     plt.show()
 
-def display_OTSU_histogram(histograms, cols=7, title="Histogram"):
+def display_OTSU_histogram(histograms, cols=7, title=" OTSU Histogram"):
     """ Display histograms in a grid format """
     num_hist = len(histograms)
     rows = (num_hist // cols) + (num_hist % cols > 0)
     # plt.title("Histogram of the flower region not the background")
     
-    fig, axes = plt.subplots(rows, cols, figsize=(13, 10))
+    fig, axes = plt.subplots(rows, cols, figsize=(20, 10))
     axes = axes.flatten()
 
     for i, ax in enumerate(axes.flatten()):
@@ -192,6 +192,7 @@ def get_hist(sample_img, mask):
 
 # main()   
 
+
 def main():
     dataset_path = r"D:\SHU\ML_lab\Lab5_img_color_featuring_with_mask\flower_dataset"
     image_paths = [os.path.join(dataset_path, img) for img in os.listdir(dataset_path) if img.endswith(".jpg")]
@@ -203,66 +204,34 @@ def main():
     display_grid(images)
 
     # Apply GaussianBlur to the red channel
-    img_r = [img[:,:,0] for img in images]
-    img_r_blur = [cv2.GaussianBlur(img, (5,5), 0) for img in img_r]
+    img_r = [img[:, :, 0] for img in images]
+    img_r_blur = [cv2.GaussianBlur(img, (5, 5), 0) for img in img_r]
     display_grid(img_r_blur, cmap="gray")
 
     # Calculate histogram for Gaussian-blurred images
-    h_r_blur = [cv2.calcHist([img], [0], None, [256], [0,256]) for img in img_r_blur]
-    # display_histogram_grid(h_r_blur) 
+    h_r_blur = [cv2.calcHist([img], [0], None, [256], [0, 256]) for img in img_r_blur]
 
     # Apply thresholding
-    thresholded_images, masked_images = apply_threshold(img for img in img_r_blur)
+    thresholded_images, masked_images = apply_threshold(list(img_r_blur))
 
     # Display one example result
-    display_threshold_grid(thresholded_images, title="Thresholded Images")
-    display_threshold_grid(masked_images, title="Masked Images")
+    display_grid(thresholded_images)
+    display_grid(masked_images,)
 
-    
-    h_masked = [cv2.calcHist([img], [0], bw, [256], [0,256]) for img, bw in zip(img_r_blur, thresholded_images)]
-    display_histogram_grid(h_masked,title="Histogram of the flower region" )
+    # Compute histograms with masks
+    h_masked = [cv2.calcHist([img], [0], bw.astype(np.uint8), [256], [0, 256]) for img, bw in zip(img_r_blur, thresholded_images)]
+    display_OTSU_histogram(h_masked)
 
-    thresh = [cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU) for img in img_r_blur]
+    # Compute Otsu's thresholding
+    _, thresh_images = zip(*[cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU) for img in img_r_blur])
 
-# Now loop through thresholded images and calculate histograms
+    # Compute histograms of thresholded images
     h_masked = []
-    for index, (bw, img) in enumerate(zip(thresh, img_r_blur)):
-        # bw[1] is the thresholded image (second element of the tuple returned by threshold function)
-        mask = (bw[1] == 255)  # mask should be a binary image (0 or 255)
-        h_masked_r = cv2.calcHist([img], [0], mask.astype(np.uint8), [256], [0, 256])
-        # print(f'{index+1}: the threshold value is {bw[0]}')  # bw[0] is the threshold value
-        
-        # Append to h_masked
+    for index, (bw, img) in enumerate(zip(thresh_images, img_r_blur)):
+        mask = (bw == 255).astype(np.uint8)
+        h_masked_r = cv2.calcHist([img], [0], mask, [256], [0, 256])
         h_masked.append(h_masked_r)
-    display_OTSU_histogram(h_masked_r, title="OTSU algorithm to find the best threshold")
-    # plt.plot(h_masked_r)
-    # plt.title("The threshold value is {}".format(ret))
-    # plt.show()
-    # plt.imshow(mask, cmap='gray')
-    # plt.show()
 
-   
-    # hists = [get_hist(img, mask) for img,mask in zip(images,masks)]
-    # f,axes = plt.subplots(9,10,figsize=(20,18))
-    # for i,ax in enumerate(axes.flatten()):
-    #     ax.plot(hists[i])
-   
-    
-    
-
-    # seed_id = 0
-    # seed_hist = hists[seed_id]
-    # correlations = [cv2.compareHist(seed_hist, hist2, cv2.HISTCMP_CHISQR) for hist2 in hists]
-
-    # sorted_indices = sorted(range(len(correlations)), key=lambda i: correlations[i])
-    # top_10_smallest_indices = sorted_indices[:10] #top 10 smallest value
-    # plt.imshow(images[seed_id])
-
-    # f,axes = plt.subplots(2,5)
-    # for i,ax in enumerate(axes.flatten()):
-    #     ax.imshow(images[top_10_smallest_indices[i]])
-    #     ax.axis('off')
-
-
+    display_OTSU_histogram(h_masked)
 
 main()
